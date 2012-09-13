@@ -1,0 +1,51 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Unlimited Page Sidebars 0.1\n"
+"POT-Creation-Date: 2012-09-12 19:27:53+03:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: Ederson Peka <ederson@gmail.com>\n"
+"Language-Team: Ederson Peka <ederson@gmail.com>\n"
+
+#: pagesidebars.php:55,66
+msgid "Unlimited Page Sidebars Options"
+msgstr ""
+
+#: pagesidebars.php:55
+msgid "Unlimited Page Sidebars"
+msgstr ""
+
+#: pagesidebars.php:75
+msgid "Number of Optional Sidebars:"
+msgstr ""
+
+#: pagesidebars.php:84
+msgid "Overwrite These Sidebars:"
+msgstr ""
+
+#: pagesidebars.php:99
+msgid "Update Options"
+msgstr ""
+
+#: pagesidebars.php:112
+msgid "Settings"
+msgstr ""
+
+#: pagesidebars.php:128,167
+msgid "Custom Sidebar #%1$d"
+msgstr ""
+
+#: pagesidebars.php:131
+msgid "This \"virtual\" sidebar is hidden by default. It should show up only in the pages that select it on the \"Sidebar\" field (taking the place of the \"real\" sidebars marked to be replaced on the options screen)."
+msgstr ""
+
+#: pagesidebars.php:162
+msgid "Sidebar"
+msgstr ""
+
+#: pagesidebars.php:165
+msgid "Default"
+msgstr ""
+
+
