@@ -3,7 +3,7 @@
 Plugin Name: Unlimited Page Sidebars
 Plugin URI: http://ederson.peka.nom.br
 Description: Assign a specific sidebar (widget area) to a page.
-Version: 0.1
+Version: 0.2
 Author: Ederson Peka
 Author URI: http://ederson.peka.nom.br
 */
@@ -12,6 +12,7 @@ Author URI: http://ederson.peka.nom.br
 add_action( 'admin_init', 'pagesidebars_settings' );
     
 function pagesidebars_settings() {
+    register_setting( 'pagesidebars_options', 'ups_posttypes' );
     register_setting( 'pagesidebars_options', 'ups_nsidebars' );
     register_setting( 'pagesidebars_options', 'ups_overwrite' );
 }
@@ -33,6 +34,11 @@ function pagesidebars_overwrite() {
 }
 function pagesidebars_nsidebars() {
     return intval( '0' . get_option( 'ups_nsidebars' ) );
+}
+function pagesidebars_posttypes() {
+    $ret = get_option( 'ups_posttypes' );
+    if ( ! ( is_array( $ret ) && count( $ret ) ) ) $ret = array( 'page' );
+    return $ret;
 }
 
 // quando o plugin é ativado, preenche as opções com valores padrão
@@ -59,6 +65,8 @@ function pagesidebars_menu() {
 
 function pagesidebars_options() {
     global $wp_registered_sidebars;
+    $ptypes = get_post_types( array( 'public' => true, 'show_ui' => true, 'show_in_nav_menus' => true ), 'objects' );
+    $posttypes = pagesidebars_posttypes();
     $nsidebars = pagesidebars_nsidebars();
     $overwrite = pagesidebars_overwrite();
     if ( !is_array( $overwrite ) ) $overwrite = array( $overwrite );
@@ -71,6 +79,17 @@ function pagesidebars_options() {
             
             <table class="form-table">
             <tbody>
+            
+            <tr valign="top">
+            <th scope="row">
+                <?php _e( 'Enable on post types:', 'pagesidebars' ) ;?>
+            </th>
+            <td>
+                <?php foreach ( $ptypes as $ptype ) : ?>
+                    <label for="ptype_<?php echo $ptype->name; ?>"><input type="checkbox" id="ptype_<?php echo $ptype->name; ?>" name="ups_posttypes[]" value="<?php echo $ptype->name; ?>" <?php if ( in_array( $ptype->name, $posttypes ) ) : ?>checked="checked" <?php endif; ?>/> <?php _e( $ptype->labels->name ); ?></label><br />
+                <?php endforeach; ?>
+            </td>
+            </tr>
             
             <tr valign="top">
             <th scope="row">
@@ -154,10 +173,9 @@ add_action( 'admin_menu', 'pagesidebars_add_custom_box' );
 add_action( 'save_post', 'pagesidebars_save_postdata' );
 /* Adds a custom section to the "advanced" Post edit screen */
 function pagesidebars_page_attributes_meta_box( $p ) {
-    page_attributes_meta_box( $p );
+    if ( post_type_supports( $p->post_type, 'page-attributes' ) ) page_attributes_meta_box( $p );
     $total = pagesidebars_nsidebars(); if ( $total ) {
-        $pid = intval( $_GET['post'] );
-        $sidebar_id = intval( '0' . pagesidebars_first_custom( 'sidebar_id' , $pid ) );
+        $sidebar_id = intval( '0' . pagesidebars_first_custom( 'sidebar_id' , $p->ID ) );
         // Use nonce for verification
         echo '<input type="hidden" name="pagesidebars_noncename" id="pagesidebars_noncename" value="' . wp_create_nonce( plugin_basename(__FILE__) ) . '" />';
         ?>
@@ -174,7 +192,9 @@ function pagesidebars_page_attributes_meta_box( $p ) {
 }
 function pagesidebars_add_custom_box( $post_id ) {
     if( function_exists( 'add_meta_box' ) ) {
-        add_meta_box( 'pageparentdiv', __( 'Page Attributes' ), 'pagesidebars_page_attributes_meta_box', 'page', 'side', 'default' );
+        foreach ( pagesidebars_posttypes() as $ptype ) {
+            add_meta_box( 'pageparentdiv', __( post_type_supports( $ptype, 'page-attributes' ) ? 'Page Attributes' : 'Unlimited Page Sidebars' ), 'pagesidebars_page_attributes_meta_box', $ptype, 'side', 'default' );
+        }
     }
 }
 /* When the post is saved, saves our custom data */
