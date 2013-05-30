@@ -3,7 +3,7 @@
 Plugin Name: Unlimited Page Sidebars
 Plugin URI: http://ederson.peka.nom.br
 Description: Assign a specific sidebar (widget area) to a page.
-Version: 0.2
+Version: 0.2.1
 Author: Ederson Peka
 Author URI: http://ederson.peka.nom.br
 */
@@ -161,7 +161,7 @@ function pagesidebars_overwrite_widgets( $swidgets ) {
     global $post, $wp_registered_sidebars;
     $overwrite = pagesidebars_overwrite();
     if ( !is_array( $overwrite ) ) $overwrite = array( $overwrite );
-    if ( is_page() && $sidebar_id = intval( '0' . pagesidebars_first_custom( 'sidebar_id' , $post->ID ) ) ) if ( $sidebar_id && array_key_exists( 'custom-sidebar-' . $sidebar_id, $swidgets ) ) {
+    if ( in_array( $post->post_type, pagesidebars_posttypes() ) && $sidebar_id = intval( '0' . pagesidebars_first_custom( 'sidebar_id' , $post->ID ) ) ) if ( $sidebar_id && array_key_exists( 'custom-sidebar-' . $sidebar_id, $swidgets ) ) {
         foreach ( $overwrite as $ow ) $swidgets[ $ow ] = $swidgets[ 'custom-sidebar-' . $sidebar_id ];
     }
     return $swidgets;
