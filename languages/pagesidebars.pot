@@ -8,6 +8,9 @@ msgstr ""
 "Last-Translator: Ederson Peka <ederson@gmail.com>\n"
 "Language-Team: Ederson Peka <ederson@gmail.com>\n"
 
+msgid "Allows assigning specific widget areas (sidebars) to each page."
+msgstr ""
+
 #: pagesidebars.php:63,76
 msgid "Unlimited Page Sidebars Options"
 msgstr ""
