@@ -150,10 +150,10 @@ function pagesidebars_init() {
 		        'id' => 'custom-sidebar-' . $n,
 		        'name' => sprintf( __( 'Custom Sidebar #%1$d', 'pagesidebars' ), $n ),
 		        'description' => __( 'This "virtual" sidebar is hidden by default. It should show up only in the pages that select it on the "Sidebar" field (taking the place of the "real" sidebars marked to be replaced on the options screen).', 'pagesidebars' ),
-		        'before_widget' => '<div id="%1$s" class="widget-container %2$s">',
-		        'after_widget' => '</div>',
-		        'before_title' => '<h3 class="widget-title">',
-		        'after_title' => '</h3>',
+		        'before_widget' => '<li id="%1$s" class="widget %2$s">',
+		        'after_widget' => '</li>',
+		        'before_title' => '<h2 class="widgettitle">',
+		        'after_title' => '</h2>',
 	        ) );
 	    endfor;
 	}
@@ -163,7 +163,7 @@ function pagesidebars_overwrite_widgets( $swidgets ) {
     global $post, $wp_registered_sidebars;
     $overwrite = pagesidebars_overwrite();
     if ( !is_array( $overwrite ) ) $overwrite = array( $overwrite );
-    if ( in_array( $post->post_type, pagesidebars_posttypes() ) && $sidebar_id = intval( '0' . pagesidebars_first_custom( 'sidebar_id' , $post->ID ) ) ) if ( $sidebar_id && array_key_exists( 'custom-sidebar-' . $sidebar_id, $swidgets ) ) {
+    if ( is_singular() && in_array( $post->post_type, pagesidebars_posttypes() ) && $sidebar_id = intval( '0' . pagesidebars_first_custom( 'sidebar_id' , $post->ID ) ) ) if ( $sidebar_id && array_key_exists( 'custom-sidebar-' . $sidebar_id, $swidgets ) ) {
         foreach ( $overwrite as $ow ) $swidgets[ $ow ] = $swidgets[ 'custom-sidebar-' . $sidebar_id ];
     }
     return $swidgets;
