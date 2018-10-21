@@ -3,7 +3,7 @@
 Plugin Name: Unlimited Page Sidebars
 Plugin URI: http://ederson.peka.nom.br
 Description: Allows assigning one specific widget area (sidebar) to each page.
-Version: 0.2.2
+Version: 0.2.3
 Author: Ederson Peka
 Author URI: http://ederson.peka.nom.br
 Text Domain: front-page-scheduler
