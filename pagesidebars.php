@@ -163,7 +163,13 @@ function pagesidebars_overwrite_widgets( $swidgets ) {
     global $post, $wp_registered_sidebars;
     $overwrite = pagesidebars_overwrite();
     if ( !is_array( $overwrite ) ) $overwrite = array( $overwrite );
-    if ( is_singular() && in_array( $post->post_type, pagesidebars_posttypes() ) && $sidebar_id = intval( '0' . pagesidebars_first_custom( 'sidebar_id' , $post->ID ) ) ) if ( $sidebar_id && array_key_exists( 'custom-sidebar-' . $sidebar_id, $swidgets ) ) {
+    $is_singular_or_posts_page = is_singular();
+    $this_singular = $post;
+    if ( !$is_singular_or_posts_page ) if ( is_home() && !is_front_page() ) {
+        $is_singular_or_posts_page = true;
+        $this_singular = get_post( get_option( 'page_for_posts' ) );
+    }
+    if ( $is_singular_or_posts_page && in_array( $this_singular->post_type, pagesidebars_posttypes() ) && $sidebar_id = intval( '0' . pagesidebars_first_custom( 'sidebar_id' , $this_singular->ID ) ) ) if ( $sidebar_id && array_key_exists( 'custom-sidebar-' . $sidebar_id, $swidgets ) ) {
         foreach ( $overwrite as $ow ) $swidgets[ $ow ] = $swidgets[ 'custom-sidebar-' . $sidebar_id ];
     }
     return $swidgets;
