@@ -143,7 +143,7 @@ add_action( 'init', 'pagesidebars_init' );
 
 function pagesidebars_init() {
     load_textdomain( 'pagesidebars', WP_LANG_DIR . '/pagesidebars/pagesidebars-' . apply_filters( 'plugin_locale', get_locale(), 'pagesidebars' ) . '.mo' );
-    load_plugin_textdomain( 'pagesidebars', false, basename( dirname( __FILE__ ) ) . '/languages' );
+    load_plugin_textdomain( 'pagesidebars', false, basename( dirname( __FILE__ ) ) . '/languages/' );
     if ( function_exists('register_sidebar') ) {
         $total = pagesidebars_nsidebars(); for ( $n = 1; $n <= $total; $n++ ) :
 	        register_sidebar( array(
