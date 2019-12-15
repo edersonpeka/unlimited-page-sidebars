@@ -1,5 +1,5 @@
 === Unlimited Page Sidebars ===
-Contributors: Ederson Peka
+Contributors: edersonpeka
 Tags: pages, sidebars, CMS
 Requires at least: 4.0
 Tested up to: 5.3.1
