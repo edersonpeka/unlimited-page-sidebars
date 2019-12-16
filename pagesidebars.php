@@ -1,11 +1,11 @@
 <?php 
 /*
 Plugin Name: Unlimited Page Sidebars
-Plugin URI: http://ederson.peka.nom.br
+Plugin URI: https://ederson.peka.nom.br
 Description: Allows assigning one specific widget area (sidebar) to each page.
 Version: 0.2.3
 Author: Ederson Peka
-Author URI: http://ederson.peka.nom.br
+Author URI: https://profiles.wordpress.org/edersonpeka/
 Text Domain: front-page-scheduler
 */
 
