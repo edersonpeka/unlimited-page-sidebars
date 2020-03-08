@@ -2,7 +2,7 @@
 Contributors: edersonpeka
 Tags: pages, sidebars, CMS
 Requires at least: 4.0
-Tested up to: 5.3.2
+Tested up to: 5.4
 Stable tag: 0.2.4
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=ederson@gmail.com&lc=BR&currency_code=BRL&item_name=Unlimited%20Page%20Sidebars%20Wordpress%20Plugin
 
