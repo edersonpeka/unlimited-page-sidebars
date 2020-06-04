@@ -38,4 +38,4 @@ Nada ainda...
 
 --
 
-[Donate] (https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=ederson@gmail.com&lc=BR&currency_code=BRL&item_name=Unlimited%20Page%20Sidebars%20Wordpress%20Plugin)
+[Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=ederson@gmail.com&lc=BR&currency_code=BRL&item_name=Unlimited%20Page%20Sidebars%20Wordpress%20Plugin)
