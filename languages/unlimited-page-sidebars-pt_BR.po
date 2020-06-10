@@ -44,8 +44,8 @@ msgid "Custom Sidebar #%1$d"
 msgstr "Área de Widget Personalizada #%1$d"
 
 #: pagesidebars.php:150
-msgid "This \"virtual\" sidebar is hidden by default. It should show up only in the pages that select it on the \"Sidebar\" field (taking the place of the \"real\" sidebars marked to be replaced on the options screen)."
-msgstr "Esta área de widgets \"virtual\" permanece oculta por padrão. Ela só deve ser exibida nas páginas que a selecionarem no campo \"Área de Widget\" (tomando o lugar das áreas de widget \"de verdade\" que estiverem marcadas para serem substituídas na tela de opções)."
+msgid "This \"virtual\" sidebar is hidden by default. It should show up only in the pages or posts that select it on the \"Sidebar\" field (taking the place of the \"real\" sidebars marked to be replaced on the options screen)."
+msgstr "Esta área de widgets \"virtual\" permanece oculta por padrão. Ela só deve ser exibida nas páginas ou posts que a selecionarem no campo \"Área de Widget\" (tomando o lugar das áreas de widget \"de verdade\" que estiverem marcadas para serem substituídas na tela de opções)."
 
 #: pagesidebars.php:183
 msgid "Sidebar"
