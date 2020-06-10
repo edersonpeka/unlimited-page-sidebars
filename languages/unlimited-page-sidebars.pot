@@ -44,7 +44,7 @@ msgid "Custom Sidebar #%1$d"
 msgstr ""
 
 #: pagesidebars.php:150
-msgid "This \"virtual\" sidebar is hidden by default. It should show up only in the pages that select it on the \"Sidebar\" field (taking the place of the \"real\" sidebars marked to be replaced on the options screen)."
+msgid "This \"virtual\" sidebar is hidden by default. It should show up only in the pages or posts that select it on the \"Sidebar\" field (taking the place of the \"real\" sidebars marked to be replaced on the options screen)."
 msgstr ""
 
 #: pagesidebars.php:183
