@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 Plugin Name: Unlimited Page Sidebars
 Plugin URI: https://ederson.peka.nom.br
@@ -41,18 +41,24 @@ class unlimited_page_sidebars {
 
         // register sidebars
         if ( function_exists( 'register_sidebar' ) ) {
-            $total = call_user_func( array( __CLASS__, 'option_nsidebars' ) );
-            for ( $n = 1; $n <= $total; $n++ ) :
+            $n = 0;
+            $sidebars = call_user_func( array( __CLASS__, 'get_sidebars' ) );
+            foreach ( $sidebars as $sidebar ) :
+                $n++;
+                $name = get_the_title( $sidebar->ID );
+                if ( !$name ) {
+                    $name = sprintf( __( 'Custom Sidebar #%1$d', 'unlimited-page-sidebars' ), $n );
+                }
                 register_sidebar( array(
-                    'id' => 'custom-sidebar-' . $n,
-                    'name' => sprintf( __( 'Custom Sidebar #%1$d', 'unlimited-page-sidebars' ), $n ),
-                    'description' => __( 'This "virtual" sidebar is hidden by default. It should show up only in the pages or posts that select it on the "Sidebar" field (taking the place of the "real" sidebars marked to be replaced on the options screen).', 'unlimited-page-sidebars' ),
+                    'id' => 'custom_sidebar_' . $sidebar->ID,
+                    'name' => $name,
+                    'description' => __( 'This "virtual" sidebar is hidden by default. It should show up only in the pages or posts that select it on the "Custom Sidebar" section.', 'unlimited-page-sidebars' ),
                     'before_widget' => '<li id="%1$s" class="widget %2$s">',
                     'after_widget' => '</li>',
                     'before_title' => '<h2 class="widgettitle">',
                     'after_title' => '</h2>',
                 ) );
-            endfor;
+            endforeach;
         }
     }
 
@@ -74,13 +80,13 @@ class unlimited_page_sidebars {
             'unlimited-page-sidebars-admin-script',
             $p_url . 'js/admin.js',
             array(),
-            filemtime( $p_dir . 'js/admin.js' )   
+            filemtime( $p_dir . 'js/admin.js' )
         );
 
-        add_action( 'wp_ajax_custom_sidebar_add', array( __CLASS__, 'sidebar_add' ) );
-        add_action( 'wp_ajax_custom_sidebar_rename', array( __CLASS__, 'sidebar_rename' ) );
-        add_action( 'wp_ajax_custom_sidebar_remove', array( __CLASS__, 'sidebar_remove' ) );
-        add_action( 'wp_ajax_custom_sidebar_list', array( __CLASS__, 'sidebar_list' ) );
+        add_action( 'wp_ajax_custom_sidebar_add', array( __CLASS__, 'ajax_sidebar_add' ) );
+        add_action( 'wp_ajax_custom_sidebar_rename', array( __CLASS__, 'ajax_sidebar_rename' ) );
+        add_action( 'wp_ajax_custom_sidebar_remove', array( __CLASS__, 'ajax_sidebar_remove' ) );
+        add_action( 'wp_ajax_custom_sidebar_list', array( __CLASS__, 'ajax_sidebar_list' ) );
     }
     public static function admin_styles() {
         wp_enqueue_style( 'unlimited-page-sidebars-admin-css' );
@@ -93,8 +99,8 @@ class unlimited_page_sidebars {
         ) );
         wp_enqueue_script( 'unlimited-page-sidebars-admin-script', false, array() );
     }
-    
-    public static function sidebar_add() {
+
+    public static function ajax_sidebar_add() {
         $str_added = __( 'Sidebar added successfully.', 'unlimited-page-sidebars' );
         $str_empty = __( 'Sidebar name can\'t be empty.', 'unlimited-page-sidebars' );
         $str_notallowed = __( 'Not allowed.', 'unlimited-page-sidebars' );
@@ -122,7 +128,7 @@ class unlimited_page_sidebars {
         }
         wp_send_json( $ret );
     }
-    public static function sidebar_rename() {
+    public static function ajax_sidebar_rename() {
         $str_renamed = __( 'Sidebar renamed successfully.', 'unlimited-page-sidebars' );
         $str_empty = __( 'Sidebar name can\'t be empty.', 'unlimited-page-sidebars' );
         $str_emptyid = __( 'No sidebar id specified.', 'unlimited-page-sidebars' );
@@ -153,7 +159,7 @@ class unlimited_page_sidebars {
         }
         wp_send_json( $ret );
     }
-    public static function sidebar_remove() {
+    public static function ajax_sidebar_remove() {
         $str_removed = __( 'Sidebar removed successfully.', 'unlimited-page-sidebars' );
         $str_emptyid = __( 'No sidebar id specified.', 'unlimited-page-sidebars' );
         $str_notallowed = __( 'Not allowed.', 'unlimited-page-sidebars' );
@@ -177,7 +183,7 @@ class unlimited_page_sidebars {
         }
         wp_send_json( $ret );
     }
-    public static function sidebar_list() {
+    public static function ajax_sidebar_list() {
         $str_notallowed = __( 'Not allowed.', 'unlimited-page-sidebars' );
         $ret = array( 'message' => '', 'markup' => '' );
         if ( current_user_can( 'manage_options' ) ) {
@@ -249,6 +255,16 @@ class unlimited_page_sidebars {
             'order' => 'ASC',
         ) );
     }
+    public static function get_other_sidebars() {
+        global $wp_registered_sidebars;
+        $other_sidebars = array();
+        foreach ( $wp_registered_sidebars as $k => $v ) :
+            if ( stripos( $k, 'custom_sidebar_' ) !== 0 ) :
+                $other_sidebars[ $k ] = $v;
+            endif;
+        endforeach;
+        return $other_sidebars;
+    }
     public static function list_items_markup( $sidebars ) {
         $ret = '';
         foreach ( $sidebars as $sidebar ) :
@@ -258,7 +274,6 @@ class unlimited_page_sidebars {
     }
     // options screen markup
     public static function options_screen() {
-        global $wp_registered_sidebars;
         // get all post types
         $ptypes = get_post_types(
             array(
@@ -268,6 +283,7 @@ class unlimited_page_sidebars {
             ),
             'objects'
         );
+        $other_sidebars = call_user_func( array( __CLASS__, 'get_other_sidebars' ) );
         $sidebars = call_user_func( array( __CLASS__, 'get_sidebars' ) );
         $list_markup = call_user_func( array( __CLASS__, 'list_items_markup' ), $sidebars );
         // retrieve saved options
@@ -280,7 +296,7 @@ class unlimited_page_sidebars {
             <h2><?php _e( 'Unlimited Page Sidebars Options', 'unlimited-page-sidebars' ); ?></h2>
             <form method="post" action="options.php">
                 <?php settings_fields( 'pagesidebars_options' ); ?>
-                
+
                 <table class="form-table">
                 <tbody>
 
@@ -318,32 +334,10 @@ class unlimited_page_sidebars {
                     <?php endforeach; ?>
                 </td>
                 </tr>
-                
-                <tr valign="top">
-                <th scope="row">
-                    <label for="nsidebars"><?php _e( 'Number of Optional Sidebars:', 'unlimited-page-sidebars' ) ;?></label>
-                </th>
-                <td>
-                    <input type="number" name="ups_nsidebars" id="nsidebars" value="<?php echo $nsidebars ;?>" size="3" min="0" step="1" class="small-text" />
-                </td>
-                </tr>
-                
-                <tr valign="top">
-                <th scope="row">
-                    <?php _e( 'Overwrite These Sidebars:', 'unlimited-page-sidebars' ) ;?>
-                </th>
-                <td>
-                    <?php $n = 0; foreach ( $wp_registered_sidebars as $k => $v ) : $n++; ?>
-                        <?php if ( stripos( $k, 'custom-sidebar-' ) !== 0 ) : ?>
-                            <label for="overwrite-sidebar-<?php echo $n; ?>"><input type="checkbox" name="ups_overwrite[]" id="overwrite-sidebar-<?php echo $n; ?>" value="<?php echo $k ;?>" <?php if ( in_array( $k, $overwrite ) ) : ?>checked="checked" <?php endif; ?>/> <?php _e( $v['name'] ); ?></label><br />
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                </td>
-                </tr>
-                
+
                 </tbody>
                 </table>
-    
+
                 <p class="submit">
                 <input type="submit" class="button-primary" value="<?php _e( 'Update Options', 'unlimited-page-sidebars' ) ;?>" />
                 </p>
@@ -354,9 +348,7 @@ class unlimited_page_sidebars {
 
     // overwrite default sidebars when needed
     public static function overwrite_widgets( $swidgets ) {
-        global $post, $wp_registered_sidebars;
-        // retrieve saved options
-        $overwrite = call_user_func( array( __CLASS__, 'option_overwrite' ) );
+        global $post;
         $posttypes = call_user_func( array( __CLASS__, 'option_posttypes' ) );
         $is_singular_or_posts_page = is_singular();
         $this_singular = $post;
@@ -367,16 +359,19 @@ class unlimited_page_sidebars {
             }
         }
         if ( $is_singular_or_posts_page && in_array( $this_singular->post_type, $posttypes ) ) {
-            // retrieve saved sidebar id for this page/post
-            $sidebar_id = call_user_func(
-                array( __CLASS__, 'first_custom' ),
-                'sidebar_id',
-                $this_singular->ID
-            );
-            $sidebar_id = intval( '0' . $sidebar_id );
-            if ( $sidebar_id && array_key_exists( 'custom-sidebar-' . $sidebar_id, $swidgets ) ) {
-                foreach ( $overwrite as $ow ) {
-                    $swidgets[ $ow ] = $swidgets[ 'custom-sidebar-' . $sidebar_id ];
+            foreach ( $swidgets as $sid => $widgets ) {
+                if ( 'wp_inactive_widgets' == $sid ) continue;
+                if ( strpos( $sid, 'custom_sidebar_' ) === 0 ) continue;
+                $sidebar_id = call_user_func(
+                    array( __CLASS__, 'first_custom' ),
+                    'sidebar_id_' . $sid,
+                    $this_singular->ID
+                );
+                if ( $sidebar_id ) {
+                    $custom_key = 'custom_sidebar_' . $sidebar_id;
+                    if ( array_key_exists( $custom_key, $swidgets ) ) {
+                        $swidgets[ $sid ] = $swidgets[ $custom_key ];
+                    }
                 }
             }
         }
@@ -391,7 +386,7 @@ class unlimited_page_sidebars {
                 add_meta_box(
                     'pageparentdiv',
                     __( 'Unlimited Page Sidebars', 'unlimited-page-sidebars' ),
-                    array( __CLASS__, 'page_attributes_meta_box' ),
+                    array( __CLASS__, 'render_sidebars_meta_box' ),
                     $ptype,
                     'side',
                     'default'
@@ -400,23 +395,38 @@ class unlimited_page_sidebars {
         }
     }
     // custom box markup
-    public static function page_attributes_meta_box( $p ) {
-        $total = call_user_func( array( __CLASS__, 'option_nsidebars' ) );
-        if ( $total ) {
-            $sidebar_id = call_user_func( array( __CLASS__, 'first_custom' ), 'sidebar_id' , $p->ID );
-            $sidebar_id = intval( '0' . $sidebar_id );
-            // use nonce for verification
+    public static function render_sidebars_meta_box( $p ) {
+        $sidebars = call_user_func( array( __CLASS__, 'get_sidebars' ) );
+        $other_sidebars = call_user_func( array( __CLASS__, 'get_other_sidebars' ) );
+        if ( $sidebars && $other_sidebars ) {
             echo '<input type="hidden" name="pagesidebars_noncename" id="pagesidebars_noncename" value="' . wp_create_nonce( plugin_basename(__FILE__) ) . '" />';
             ?>
-            <p><strong><?php _e( 'Sidebar', 'unlimited-page-sidebars' ); ?></strong></p>
-            <label class="screen-reader-text" for="sidebar_id"><?php _e( 'Sidebar', 'unlimited-page-sidebars' ); ?></label>
-            <select name="sidebar_id" id="sidebar_id">
-                <option value="0">(<?php _e( 'Default', 'unlimited-page-sidebars' ); ?>)</option>
-                <?php for ( $n = 1; $n <= $total; $n++ ) : ?>
-                    <option value="<?php echo $n; ?>"<?php if ( $n == $sidebar_id ) : ?> selected="selected"<?php endif; ?>><?php printf( __( 'Custom Sidebar #%1$d', 'unlimited-page-sidebars' ), $n ); ?></option>
-                <?php endfor; ?>
-            </select>
+            <p><strong><?php _e( 'Custom Sidebars', 'unlimited-page-sidebars' ); ?></strong></p>
             <?php
+            $n = 0;
+            foreach ( $other_sidebars as $k => $v ) {
+                $n++;
+                $sidebar_id = call_user_func(
+                    array( __CLASS__, 'first_custom' ),
+                    'sidebar_id_' . $v[ 'id' ],
+                    $p->ID
+                );
+                $sidebar_id = intval( '0' . $sidebar_id );
+                ?>
+                <p>
+                    <label for="sidebar_select_<?php echo $n; ?>">
+                        <?php echo sprintf( __( 'Sidebar <em>%s</em>:', 'unlimited-page-sidebars' ), $v[ 'name' ] ); ?>
+                    </label>
+                    <br />
+                    <select name="custom_sidebar_id[<?php echo esc_attr( $v[ 'id' ] ); ?>]" id="sidebar_select_<?php echo $n; ?>">
+                        <option value="0">(<?php _e( 'Default', 'unlimited-page-sidebars' ); ?>)</option>
+                        <?php foreach ( $sidebars as $sidebar ) : ?>
+                            <option value="<?php echo $sidebar->ID; ?>"<?php if ( $sidebar->ID == $sidebar_id ) : ?> selected="selected"<?php endif; ?>><?php echo get_the_title( $sidebar->ID ); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </p>
+                <?php
+            }
         }
     }
     // save custom box data
@@ -439,7 +449,19 @@ class unlimited_page_sidebars {
         }
 
         // ok, we're authenticated: we need to find and save the data
-        call_user_func( array( __CLASS__, 'save_custom' ), 'sidebar_id', $post_id );
+        if ( array_key_exists( 'custom_sidebar_id', $_POST ) ) {
+            $custom = $_POST[ 'custom_sidebar_id' ];
+            if ( is_array( $custom ) ) {
+                foreach ( $custom as $k => $v ) {
+                    call_user_func(
+                        array( __CLASS__, 'save_custom' ),
+                        'sidebar_id_' . $k,
+                        $v,
+                        $post_id
+                    );
+                }
+            }
+        }
 
         return true;
     }
@@ -452,22 +474,21 @@ class unlimited_page_sidebars {
         return $default;
     }
     // save custom field value
-    public static function save_custom( $field, $pid ) {
-        if ( is_array( $_POST[$field] ) ) {
-            $value = implode( ',', $_POST[$field] );
+    public static function save_custom( $field, $value, $pid ) {
+        if ( $value ) {
+            add_post_meta(
+                $pid,
+                '_pagesidebars_' . $field,
+                $value,
+                true
+            ) or update_post_meta(
+                $pid,
+                '_pagesidebars_' . $field,
+                $value
+            );
         } else {
-            $value = trim( $_POST[$field] );
+            delete_post_meta( $pid, '_pagesidebars_' . $field );
         }
-        add_post_meta(
-            $pid,
-            '_pagesidebars_' . $field,
-            $value,
-            true
-        ) or update_post_meta(
-            $pid,
-            '_pagesidebars_' . $field,
-            $value
-        );
     }
 }
 
