@@ -3,7 +3,7 @@
 Plugin Name: Unlimited Page Sidebars
 Plugin URI: https://ederson.peka.nom.br
 Description: Allows assigning one specific widget area (sidebar) to each page.
-Version: 0.2.4
+Version: 0.2.5
 Author: Ederson Peka
 Author URI: https://profiles.wordpress.org/edersonpeka/
 Text Domain: unlimited-page-sidebars
@@ -59,12 +59,28 @@ class unlimited_page_sidebars {
                     'after_title' => '</h2>',
                 ) );
             endforeach;
+
+            // deprecated, backward compatibility
+            $total = call_user_func( array( __CLASS__, 'option_nsidebars' ) );
+            for ( $n = 1; $n <= $total; $n++ ) :
+                register_sidebar( array(
+                    'id' => 'custom-sidebar-' . $n,
+                    'name' => sprintf( __( 'Deprecated Custom Sidebar #%1$d', 'unlimited-page-sidebars' ), $n ),
+                    'description' => __( 'This "virtual" sidebar is deprecated. It was left here so you can transfer its widgets to any new custom sidebar. After that, you can get rid of these deprecated sidebars in plugin\'s options screen.', 'unlimited-page-sidebars' ),
+                    'before_widget' => '<li id="%1$s" class="widget %2$s">',
+                    'after_widget' => '</li>',
+                    'before_title' => '<h2 class="widgettitle">',
+                    'after_title' => '</h2>',
+                ) );
+            endfor;
         }
     }
 
     public static function admin_init() {
         // register settings
         register_setting( 'pagesidebars_options', 'ups_posttypes' );
+        // deprecated
+        register_setting( 'pagesidebars_options', 'ups_nsidebars' );
 
         $p_dir = WP_PLUGIN_DIR . '/' . dirname( plugin_basename( __FILE__ ) ) . '/';
         $p_url = WP_PLUGIN_URL . '/' . dirname( plugin_basename( __FILE__ ) ) . '/';
@@ -237,6 +253,10 @@ class unlimited_page_sidebars {
         }
         return $ret;
     }
+    // retrieve deprecated "nsidebars" option
+    public static function option_nsidebars() {
+        return intval( '0' . get_option( 'ups_nsidebars' ) );
+    }
 
     // auxiliar functions
     public static function get_sidebars() {
@@ -283,6 +303,8 @@ class unlimited_page_sidebars {
         $list_markup = call_user_func( array( __CLASS__, 'list_items_markup' ), $sidebars );
         // retrieve "post types" option
         $posttypes = call_user_func( array( __CLASS__, 'option_posttypes' ) );
+        // retrieve deprecated "nsidebars" option
+        $total = call_user_func( array( __CLASS__, 'option_nsidebars' ) );
         ?>
         <div class="wrap unlimited_page_sidebars_options">
             <div id="icon-options-general" class="icon32"><br /></div>
@@ -327,6 +349,19 @@ class unlimited_page_sidebars {
                     <?php endforeach; ?>
                 </td>
                 </tr>
+
+                <?php if ( $total ) : // deprecated option ?>
+                    <tr valign="top">
+                    <th scope="row">
+                        <h3><?php _e( 'Deprecated Option', 'unlimited-page-sidebars' ); ?></h3>
+                        <p class="description"><?php _e( 'As you had sidebars set up in a version prior than 0.2.5, this option is still displayed. After you create new custom sidebars above, you should transfer to them your widgets from the old deprecated ones. After that, you can come here and set this option to 0 (zero). Then this field must disappear for good.', 'unlimited-page-sidebars' ); ?></p>
+                        <label for="nsidebars"><?php _e( 'Number of Optional Sidebars:', 'unlimited-page-sidebars' ) ;?></label>
+                    </th>
+                    <td>
+                        <input type="number" name="ups_nsidebars" id="nsidebars" value="<?php echo $nsidebars ;?>" size="3" min="0" step="1" class="small-text" />
+                    </td>
+                    </tr>
+                <?php endif; ?>
 
                 </tbody>
                 </table>
