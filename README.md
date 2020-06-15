@@ -1,10 +1,10 @@
 # Unlimited Page Sidebars WordPress Plugin
 
-Assign one specific widget area (sidebar) to each page.
+Assign one specific widget area (sidebar) to each page or post.
 
 ## Portuguese: Resumo
 
-Atribua uma área de widgets específica para cada página.
+Atribua uma área de widgets específica para cada página ou post.
 
 ### Description
 
