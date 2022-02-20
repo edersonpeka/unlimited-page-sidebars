@@ -28,14 +28,6 @@ Com este plugin, você pode criar quantas "áreas de widgets" você quiser, e at
 4. Ative o plugin clicando no link 'ativar'
 5. Agora vá até a seção 'Configurações' e selecione 'Unlimited Page Sidebars', onde você pode configurar o plugin
 
-### Frequently Asked Questions
-
-Nothing yet...
-
-#### Portuguese: Perguntas Frequentes 
-
-Nada ainda...
-
 --
 
 [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=ederson@gmail.com&lc=BR&currency_code=BRL&item_name=Unlimited%20Page%20Sidebars%20Wordpress%20Plugin)

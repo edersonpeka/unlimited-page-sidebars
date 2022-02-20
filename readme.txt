@@ -34,12 +34,3 @@ ATENÇÃO: A atualização a partir de versões anteriores à 0.2.5 exige nova c
 3. Acesse o painel do WordPress e vá para a seção 'Plugins'. Agora você já deve ver o Unlimited Page Sidebars na lista de plugins disponíveis
 4. Ative o plugin clicando no link 'ativar'
 5. Agora vá até a seção 'Configurações' e selecione 'Unlimited Page Sidebars', onde você pode configurar o plugin
-
-== Frequently Asked Questions ==
-
-= Nothing yet... =
-
-= Portuguese: Perguntas Frequentes  =
-
-= Nada ainda... =
-
