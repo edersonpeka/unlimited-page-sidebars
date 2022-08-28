@@ -20,7 +20,7 @@ msgid "Unlimited Page Sidebars"
 msgstr ""
 
 #. Plugin URI of the plugin
-msgid "https://ederson.peka.nom.br"
+msgid "https://ederson.ferreira.tec.br"
 msgstr ""
 
 #. Description of the plugin

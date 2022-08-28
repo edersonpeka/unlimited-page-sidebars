@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Unlimited Page Sidebars
-Plugin URI: https://ederson.peka.nom.br
+Plugin URI: https://ederson.ferreira.tec.br
 Description: Allows assigning one specific widget area (sidebar) to each page or post.
 Version: 0.2.5
 Author: Ederson Peka
