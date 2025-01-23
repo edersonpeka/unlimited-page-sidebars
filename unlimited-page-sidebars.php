@@ -3,7 +3,7 @@
 Plugin Name: Unlimited Page Sidebars
 Plugin URI: https://ederson.ferreira.tec.br
 Description: Allows assigning one specific widget area (sidebar) to each page or post.
-Version: 0.2.5
+Version: 0.2.6
 Author: Ederson Peka
 Author URI: https://profiles.wordpress.org/edersonpeka/
 Text Domain: unlimited-page-sidebars
@@ -279,7 +279,7 @@ class unlimited_page_sidebars {
     public static function list_items_markup( $sidebars ) {
         $ret = '';
         foreach ( $sidebars as $sidebar ) :
-            $ret .= '<li data-sidebarid="' . esc_attr( $sidebar->ID ) . '"><span class="dashicons dashicons-minus" title="' . esc_attr( __( 'delete', 'unlimited-page-sidebars' ) ) . '"></span> <a href="#">' . $sidebar->post_title . '</a></li>';
+            $ret .= '<li data-sidebarid="' . esc_attr( $sidebar->ID ) . '"><span class="dashicons dashicons-minus" title="' . esc_attr( __( 'delete', 'unlimited-page-sidebars' ) ) . '"></span> <a href="#">' . esc_html( $sidebar->post_title ) . '</a></li>';
         endforeach;
         return $ret;
     }
@@ -467,7 +467,7 @@ class unlimited_page_sidebars {
                     <select name="custom_sidebar_id[<?php echo esc_attr( $v[ 'id' ] ); ?>]" id="sidebar_select_<?php echo $n; ?>">
                         <option value="0">(<?php _e( 'Default', 'unlimited-page-sidebars' ); ?>)</option>
                         <?php foreach ( $sidebars as $sidebar ) : ?>
-                            <option value="<?php echo $sidebar->ID; ?>"<?php if ( $sidebar->ID == $sidebar_id ) : ?> selected="selected"<?php endif; ?>><?php echo get_the_title( $sidebar->ID ); ?></option>
+                            <option value="<?php echo $sidebar->ID; ?>"<?php if ( $sidebar->ID == $sidebar_id ) : ?> selected="selected"<?php endif; ?>><?php echo esc_html( get_the_title( $sidebar->ID ) ); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </p>
