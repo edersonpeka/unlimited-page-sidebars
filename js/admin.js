@@ -42,12 +42,14 @@ window.addEventListener( 'load', function () {
         _list.addEventListener( 'click', function ( _ev ) {
             var _list = _ev.target.closest( '.unlimited_page_sidebars_list' );
             var _id = _ev.target.closest( 'li' ).dataset[ 'sidebarid' ];
+            var _wpnonce = _ev.target.closest( 'form' ).querySelector( 'input[name="_wpnonce"]' ).value;
             if ( _ev.target.matches( 'span' ) ) {
                 if ( confirm( unlimited_page_sidebars.confirm_removal ) ) {
                     _list.say_loading();
                     var _data = new URLSearchParams();
                     _data.append( 'action', 'custom_sidebar_remove' );
                     _data.append( 'id', _id );
+                    _data.append( '_wpnonce', _wpnonce );
                     fetch( ajaxurl, {
                         method: 'post',
                         body: _data
@@ -67,6 +69,7 @@ window.addEventListener( 'load', function () {
                     _data.append( 'action', 'custom_sidebar_rename' );
                     _data.append( 'id', _id );
                     _data.append( 'name', _new_name );
+                    _data.append( '_wpnonce', _wpnonce );
                     fetch( ajaxurl, {
                         method: 'post',
                         body: _data
@@ -88,10 +91,12 @@ window.addEventListener( 'load', function () {
             _btn.classList.add( 'disabled' );
             var _name = prompt( unlimited_page_sidebars.ask_name );
             if ( _name ) {
+                var _wpnonce = _btn.closest( 'form' ).querySelector( 'input[name="_wpnonce"]' ).value;
                 _btn.related_list.say_loading();
                 var _data = new URLSearchParams();
                 _data.append( 'action', 'custom_sidebar_add' );
                 _data.append( 'name', _name );
+                _data.append( '_wpnonce', _wpnonce );
                 fetch( ajaxurl, {
                     method: 'post',
                     body: _data

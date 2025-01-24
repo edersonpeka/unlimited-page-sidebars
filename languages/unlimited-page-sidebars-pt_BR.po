@@ -91,6 +91,9 @@ msgstr "O nome da área de widgets não pode ser vazio."
 msgid "Not allowed."
 msgstr "Não permitido."
 
+msgid "Interface expired, please reload the page and try again."
+msgstr "A interface expirou, por favor recarregue a página e tente novamente."
+
 #: unlimited-page-sidebars.php:171
 msgid "Sidebar renamed successfully."
 msgstr "Área de widgets renomeada com sucesso."

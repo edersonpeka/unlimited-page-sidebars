@@ -3,7 +3,7 @@
 Plugin Name: Unlimited Page Sidebars
 Plugin URI: https://ederson.ferreira.tec.br
 Description: Allows assigning one specific widget area (sidebar) to each page or post.
-Version: 0.2.6
+Version: 0.2.7
 Author: Ederson Peka
 Author URI: https://profiles.wordpress.org/edersonpeka/
 Text Domain: unlimited-page-sidebars
@@ -143,10 +143,13 @@ class unlimited_page_sidebars {
         $str_added = __( 'Sidebar added successfully.', 'unlimited-page-sidebars' );
         $str_empty = __( 'Sidebar name can\'t be empty.', 'unlimited-page-sidebars' );
         $str_notallowed = __( 'Not allowed.', 'unlimited-page-sidebars' );
+        $str_expired = __( 'Interface expired, please reload the page and try again.', 'unlimited-page-sidebars' );
         $ret = array( 'message' => '', 'id' => 0 );
         if ( current_user_can( 'manage_options' ) ) {
             $name = array_key_exists( 'name', $_POST ) ? $_POST[ 'name' ] : '';
-            if ( $name ) {
+            if ( !wp_verify_nonce( $_POST['_wpnonce'], 'pagesidebars_options-options' ) ) {
+                $ret[ 'message' ] = $str_expired;
+            } elseif ( $name ) {
                 $id = wp_insert_post( array(
                     'post_title' => $name,
                     'post_content' => '',
@@ -172,12 +175,15 @@ class unlimited_page_sidebars {
         $str_empty = __( 'Sidebar name can\'t be empty.', 'unlimited-page-sidebars' );
         $str_emptyid = __( 'No sidebar id specified.', 'unlimited-page-sidebars' );
         $str_notallowed = __( 'Not allowed.', 'unlimited-page-sidebars' );
+        $str_expired = __( 'Interface expired, please reload the page and try again.', 'unlimited-page-sidebars' );
         $ret = array( 'message' => '', 'id' => 0 );
         if ( current_user_can( 'manage_options' ) ) {
             $name = array_key_exists( 'name', $_POST ) ? $_POST[ 'name' ] : '';
             $id = array_key_exists( 'id', $_POST ) ? $_POST[ 'id' ] : 0;
             $id = intval( '0' . $id );
-            if ( !$id ) {
+            if ( !wp_verify_nonce( $_POST['_wpnonce'], 'pagesidebars_options-options' ) ) {
+                $ret[ 'message' ] = $str_expired;
+            } elseif ( !$id ) {
                 $ret[ 'message' ] = $str_emptyid;
             } elseif ( $name ) {
                 $id = wp_update_post( array(
@@ -202,11 +208,14 @@ class unlimited_page_sidebars {
         $str_removed = __( 'Sidebar removed successfully.', 'unlimited-page-sidebars' );
         $str_emptyid = __( 'No sidebar id specified.', 'unlimited-page-sidebars' );
         $str_notallowed = __( 'Not allowed.', 'unlimited-page-sidebars' );
+        $str_expired = __( 'Interface expired, please reload the page and try again.', 'unlimited-page-sidebars' );
         $ret = array( 'message' => '', 'id' => 0 );
         if ( current_user_can( 'manage_options' ) ) {
             $id = array_key_exists( 'id', $_POST ) ? $_POST[ 'id' ] : 0;
             $id = intval( '0' . $id );
-            if ( $id ) {
+            if ( !wp_verify_nonce( $_POST['_wpnonce'], 'pagesidebars_options-options' ) ) {
+                $ret[ 'message' ] = $str_expired;
+            } elseif ( $id ) {
                 $id = wp_delete_post( $id, true );
                 if ( is_wp_error( $id ) ) {
                     $ret[ 'message' ] = $id->get_error_message();
@@ -477,7 +486,7 @@ class unlimited_page_sidebars {
     }
     // save custom box data
     public static function save_postdata( $post_id ) {
-        // verify this came from the our screen and with proper authorization,
+        // verify this came from our screen and with proper authorization,
         // because save_post can be triggered at other times
         if ( !array_key_exists( 'pagesidebars_noncename', $_POST ) ) {
             return $post_id;

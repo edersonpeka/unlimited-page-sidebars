@@ -84,6 +84,9 @@ msgstr ""
 msgid "Not allowed."
 msgstr ""
 
+msgid "Interface expired, please reload the page and try again."
+msgstr ""
+
 #: unlimited-page-sidebars.php:171
 msgid "Sidebar renamed successfully."
 msgstr ""
