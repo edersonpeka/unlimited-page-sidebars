@@ -3,9 +3,11 @@
 Plugin Name: Unlimited Page Sidebars
 Plugin URI: https://ederson.ferreira.tec.br
 Description: Allows assigning one specific widget area (sidebar) to each page or post.
-Version: 0.2.7
+Version: 0.2.8
 Author: Ederson Peka
 Author URI: https://profiles.wordpress.org/edersonpeka/
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: unlimited-page-sidebars
 */
 
@@ -13,13 +15,6 @@ if ( !class_exists( 'unlimited_page_sidebars' ) ) :
 
 class unlimited_page_sidebars {
     public static function init() {
-        // internationalization
-        load_plugin_textdomain(
-            'unlimited-page-sidebars',
-            false,
-            dirname( plugin_basename( __FILE__ ) ) . '/languages/'
-        );
-
         // register private post type
         $post_type_args = array( 'public' => false, 'hierarchical' => false );
         register_post_type( 'custom_sidebar', $post_type_args );
